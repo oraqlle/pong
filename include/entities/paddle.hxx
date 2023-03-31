@@ -21,7 +21,8 @@ namespace pong::entities
         paddle() noexcept = default;
 
         paddle(const paddle& other) noexcept
-            : m_width{ other.m_width }
+            : sf::Sprite()
+            , m_width{ other.m_width }
             , m_height{ other.m_height }
             , m_xpos{ other.m_xpos }
             , m_ypos{ other.m_ypos }
