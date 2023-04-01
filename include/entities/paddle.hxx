@@ -27,10 +27,26 @@ namespace pong::entities
         ) noexcept
             : sf::RectangleShape(sf::Vector2f(width, height))
         {
-            this->setOrigin(width / 2.0f, height / 2.0f);
-            this->setRotation(180);
-            this->setPosition(sf::Vector2f(xpos, ypos));
-            this->setFillColor(colour);
+            setOrigin(width / 2.0f, height / 2.0f);
+            setRotation(180);
+            setPosition(sf::Vector2f(xpos, ypos));
+            setFillColor(colour);
+        }
+
+        auto move_up() noexcept
+            -> void
+        {
+            auto [xpos, ypos] = getPosition();
+            ypos -= 10.0f;
+            setPosition(sf::Vector2f(xpos, ypos));
+        }
+
+        auto move_down() noexcept
+            -> void
+        {
+            auto [xpos, ypos] = getPosition();
+            ypos += 10.0f;
+            setPosition(sf::Vector2f(xpos, ypos));
         }
     };
 

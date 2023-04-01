@@ -72,6 +72,18 @@ namespace pong::states
                     case sf::Keyboard::Escape:
                         m_window->close();
                         break;
+                    case sf::Keyboard::W:
+                        m_left_paddle.move_up();
+                        break;
+                    case sf::Keyboard::S:
+                        m_left_paddle.move_down();
+                        break;
+                    case sf::Keyboard::I:
+                        m_right_paddle.move_up();
+                        break;
+                    case sf::Keyboard::K:
+                        m_right_paddle.move_down();
+                        break;
                     default:
                         break;
                 }
