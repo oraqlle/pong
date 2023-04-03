@@ -16,6 +16,8 @@ namespace pong::entities
         using float_type    = float;
         using colour_type   = sf::Color;
 
+    public:
+
         paddle() noexcept = default;
 
         explicit paddle(
@@ -48,8 +50,9 @@ namespace pong::entities
             ypos += 10.0f;
             setPosition(sf::Vector2f(xpos, ypos));
         }
-    };
 
-}  /// namespace pong::entities
+    };  //< class paddle
 
-#endif  /// PONG_ENTITIES_PADDLE
+}  //< namespace pong::entities
+
+#endif  //< PONG_ENTITIES_PADDLE

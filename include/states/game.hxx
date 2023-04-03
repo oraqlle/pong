@@ -1,6 +1,7 @@
-#ifndef PONG_STATES_SAMPLE
-#   define PONG_STATES_SAMPLE
+#ifndef PONG_STATES_GAME
+#   define PONG_STATES_GAME
 
+#include <entities/ball.hxx>
 #include <entities/paddle.hxx>
 
 #include <crank/crank.hxx>
@@ -16,8 +17,9 @@ namespace pong::states
     {
     public:
         
-        // using paddle_type = sf::RectangleShape;
-        using paddle_type = pong::entities::paddle;
+        using ball_type         = pong::entities::ball;
+        using direction_type    = pong::entities::ball::direction;
+        using paddle_type       = pong::entities::paddle;
     
     public:
 
@@ -41,19 +43,20 @@ namespace pong::states
 
         void render(crank::engine& eng) noexcept;
 
-    protected:
+    private:
 
-        main_game() = default;
+        void start_game() noexcept;
 
     protected:
 
         std::shared_ptr<sf::RenderWindow> m_window;
-        sf::CircleShape m_circle;
+        ball_type m_ball;
         paddle_type m_left_paddle;
         paddle_type m_right_paddle;
+        bool m_running;
 
-    };  /// class sample
+    };  //< class game
 
-}  /// namespace pong::states
+}  //< namespace pong::states
 
-#endif  /// PONG_STATES_SAMPLE
+#endif  //< PONG_STATES_GAME
