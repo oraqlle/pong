@@ -39,7 +39,7 @@ namespace pong::entities
             -> void
         {
             auto [xpos, ypos] = getPosition();
-            ypos -= 10.0f;
+            ypos -= m_speed;
             setPosition(sf::Vector2f(xpos, ypos));
         }
 
@@ -47,9 +47,13 @@ namespace pong::entities
             -> void
         {
             auto [xpos, ypos] = getPosition();
-            ypos += 10.0f;
+            ypos += m_speed;
             setPosition(sf::Vector2f(xpos, ypos));
         }
+
+    private:
+
+        static constexpr float_type m_speed = 15.0f;
 
     };  //< class paddle
 

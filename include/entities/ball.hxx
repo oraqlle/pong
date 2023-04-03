@@ -110,8 +110,8 @@ namespace pong::entities
 
     private:
 
-        static constexpr float_type m_xspeed = 5.0f;
-        static constexpr float_type m_yspeed = 5.0f;
+        static constexpr float_type m_xspeed = 2.5f;
+        static constexpr float_type m_yspeed = 2.250f;
         direction m_direction;
 
     };  //< class ball
