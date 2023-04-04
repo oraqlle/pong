@@ -21,9 +21,8 @@ namespace pong::entities
             DOWNLEFT = 5, DOWN = 8, DOWNRIGHT = 6
         };
 
-        using float_type    = float;
         using colour_type   = sf::Color;
-        // using direction_t   = direction;
+        using float_type    = float;
 
     public:
 

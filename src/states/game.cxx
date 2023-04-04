@@ -19,6 +19,12 @@ namespace pong::states
         , m_ball{ ball_type{}  }
         , m_left_paddle{ paddle_type{} }
         , m_right_paddle{ paddle_type{} }
+        , m_top_boundary{ boundary_type{} }
+        , m_bottom_boundary{ boundary_type{} }
+        , m_left_boundary{ boundary_type{} }
+        , m_right_boundary{ boundary_type{} }
+        , m_left_paddle_boundary{ boundary_type{} }
+        , m_right_paddle_boundary{ boundary_type{} }
     {
         auto [w, h] = static_cast<sf::Vector2f>(m_window->getSize());
         m_ball.setFillColor(colour);
@@ -53,6 +59,26 @@ namespace pong::states
             right_paddle_xpos,
             paddle_ypos,
             sf::Color::White
+        };
+
+        m_top_boundary = boundary_type{
+            sf::Vector2f{ 0.0f, 0.0f },
+            sf::Vector2f{ w, 1.0f }
+        };
+
+        m_bottom_boundary = boundary_type{
+            sf::Vector2f{ 0.0f, h - 1.0f },
+            sf::Vector2f{ w, 1.0f }
+        };
+
+        m_left_boundary = boundary_type{
+            sf::Vector2f{ 0.0f, 0.0f },
+            sf::Vector2f{ 1.0f, h }
+        };
+
+        m_right_boundary = boundary_type{
+            sf::Vector2f{ w, 0.0f },
+            sf::Vector2f{ 1.0f, h }
         };
     }
 
@@ -112,7 +138,22 @@ namespace pong::states
 
     void main_game::update([[maybe_unused]] crank::engine& eng) noexcept
     { 
+        // auto [w, h] = static_cast<sf::Vector2f>(m_window->getSize());
         m_ball.move();
+
+        if (m_ball.getGlobalBounds().intersects(m_top_boundary))
+            m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) + 4);
+            // m_ball.get_direction() = m_ball.get_direction() == direction_type::UPLEFT ? direction_type::DOWNLEFT : direction_type::DOWNRIGHT;
+
+        if (m_ball.getGlobalBounds().intersects(m_bottom_boundary))
+            m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) - 4);
+            // m_ball.get_direction() = m_ball.get_direction() == direction_type::DOWNLEFT ? direction_type::UPLEFT : direction_type::UPRIGHT;
+
+        if (m_ball.getGlobalBounds().intersects(m_left_paddle.as_bounds()))
+            m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) + 1);
+
+        if (m_ball.getGlobalBounds().intersects(m_right_paddle.as_bounds()))
+            m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) - 1);
     }
 
     void main_game::render([[maybe_unused]] crank::engine& eng) noexcept

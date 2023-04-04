@@ -18,6 +18,7 @@ namespace pong::states
     public:
         
         using ball_type         = pong::entities::ball;
+        using boundary_type     = sf::Rect<float>;
         using direction_type    = pong::entities::ball::direction;
         using paddle_type       = pong::entities::paddle;
     
@@ -53,6 +54,12 @@ namespace pong::states
         ball_type m_ball;
         paddle_type m_left_paddle;
         paddle_type m_right_paddle;
+        boundary_type m_top_boundary;
+        boundary_type m_bottom_boundary;
+        boundary_type m_left_boundary;
+        boundary_type m_right_boundary;
+        boundary_type m_left_paddle_boundary;
+        boundary_type m_right_paddle_boundary;
         bool m_running;
 
     };  //< class game

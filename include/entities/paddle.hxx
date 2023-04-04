@@ -13,8 +13,9 @@ namespace pong::entities
     {
     public:
 
-        using float_type    = float;
+        using boundary_type = sf::Rect<float>;
         using colour_type   = sf::Color;
+        using float_type    = float;
 
     public:
 
@@ -49,6 +50,18 @@ namespace pong::entities
             auto [xpos, ypos] = getPosition();
             ypos += m_speed;
             setPosition(sf::Vector2f(xpos, ypos));
+        }
+
+        auto as_bounds() noexcept
+            -> boundary_type
+        {
+            auto [w, h] = getSize();
+            auto [xpos, ypos] = getPosition();
+            
+            return boundary_type{
+                sf::Vector2f{ xpos - w, ypos - h },
+                sf::Vector2f{ w, h }
+            };
         }
 
     private:
