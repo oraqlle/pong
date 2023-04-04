@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <memory>
+#include <utility>
 
 namespace pong::states
 {
@@ -20,7 +21,9 @@ namespace pong::states
         using ball_type         = pong::entities::ball;
         using boundary_type     = sf::Rect<float>;
         using direction_type    = pong::entities::ball::direction;
+        using font_type         = sf::Font;
         using paddle_type       = pong::entities::paddle;
+        using text_type         = sf::Text;
     
     public:
 
@@ -58,9 +61,11 @@ namespace pong::states
         boundary_type m_bottom_boundary;
         boundary_type m_left_boundary;
         boundary_type m_right_boundary;
-        boundary_type m_left_paddle_boundary;
-        boundary_type m_right_paddle_boundary;
+        std::pair<unsigned, unsigned> m_scores;
         bool m_running;
+        text_type m_score_label;
+        text_type m_score_values;
+        font_type m_font;
 
     };  //< class game
 
