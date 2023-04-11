@@ -59,7 +59,7 @@ namespace pong::entities
             auto [xpos, ypos] = getPosition();
             
             return boundary_type{
-                sf::Vector2f{ xpos - w, ypos - h },
+                sf::Vector2f{ xpos - (w / 2.0f), ypos - (h / 2.0f) },
                 sf::Vector2f{ w, h }
             };
         }
