@@ -63,8 +63,8 @@ namespace pong::states
         boundary_type m_right_boundary;
         std::pair<unsigned, unsigned> m_scores;
         bool m_running;
-        text_type m_score_label;
-        text_type m_score_values;
+        text_type m_left_score;
+        text_type m_right_score;
         font_type m_font;
 
     };  //< class game

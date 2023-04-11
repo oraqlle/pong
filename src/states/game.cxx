@@ -1,6 +1,8 @@
 #include <states/game.hxx>
 
 #include <crank/crank.hxx>
+#include <fmt/core.h>
+#include <fmt/format.h>
 #include <SFML/Graphics.hpp>
 
 #include <filesystem>
@@ -31,8 +33,8 @@ namespace pong::states
         , m_right_boundary{ boundary_type{} }
         , m_scores{ 0u, 0u }
         , m_running{ false }
-        , m_score_label{ text_type{} }
-        , m_score_values{ text_type{} }
+        , m_left_score{ text_type{} }
+        , m_right_score{ text_type{} }
         , m_font{ font_type{} }
     {
         auto [w, h] = static_cast<sf::Vector2f>(m_window->getSize());
@@ -97,22 +99,22 @@ namespace pong::states
         if (!m_font.loadFromFile(asset_path / "JetBrainsMonoNF.ttf"s))
             std::clog << "Error loading font!" << std::endl;
 
-        m_score_label.setFont(m_font);
-        m_score_label.setString("Score:"s);
-        m_score_label.setStyle(text_type::Bold | text_type::Underlined);
-        m_score_label.setCharacterSize(static_cast<unsigned>(0.03f * h));
-        auto label_txt_w = m_score_label.getLocalBounds().width;
-        auto label_txt_h = m_score_label.getLocalBounds().height;
-        m_score_label.setOrigin(label_txt_w / 2.0f, label_txt_h / 2.0f);
-        m_score_label.setPosition(w / 2.0f, label_txt_h);
+        m_left_score.setFont(m_font);
+        m_left_score.setString("00"s);
+        m_left_score.setStyle(text_type::Bold);
+        m_left_score.setCharacterSize(static_cast<unsigned>(0.05f * h));
+        auto label_txt_w = m_left_score.getLocalBounds().width;
+        auto label_txt_h = m_left_score.getLocalBounds().height;
+        m_left_score.setOrigin(label_txt_w / 2.0f, label_txt_h / 2.0f);
+        m_left_score.setPosition(w * 0.1f, label_txt_h);
 
-        m_score_values.setFont(m_font);
-        m_score_values.setString("Player 1: 0 | Player 2: 0"s);
-        m_score_values.setCharacterSize(static_cast<unsigned>(0.025f * h));
-        auto values_txt_w = m_score_values.getLocalBounds().width;
-        auto values_txt_h = m_score_values.getLocalBounds().height;
-        m_score_values.setOrigin(values_txt_w / 2.0f, values_txt_h / 2.0f);
-        m_score_values.setPosition(w / 2.0f, (2.0f * label_txt_h) + values_txt_h);
+        m_right_score.setFont(m_font);
+        m_right_score.setString("00"s);
+        m_right_score.setCharacterSize(static_cast<unsigned>(0.05f * h));
+        auto values_txt_w = m_right_score.getLocalBounds().width;
+        auto values_txt_h = m_right_score.getLocalBounds().height;
+        m_right_score.setOrigin(values_txt_w / 2.0f, values_txt_h / 2.0f);
+        m_right_score.setPosition(w - (w * 0.1f), label_txt_h);
     }
 
     void main_game::init([[maybe_unused]] crank::engine& eng) noexcept
@@ -204,19 +206,15 @@ namespace pong::states
     { 
         auto [p1, p2] = m_scores;
 
-        m_score_values.setString(
-            "Player 1: "s 
-          + std::to_string(p1) 
-          + " | Player 2: "
-          + std::to_string(p2)
-        );
+        m_left_score.setString(fmt::format("{:02}", p1));
+        m_right_score.setString(fmt::format("{:02}", p2));
 
         m_window->clear();
         m_window->draw(m_ball);
         m_window->draw(m_left_paddle);
         m_window->draw(m_right_paddle);
-        m_window->draw(m_score_label);
-        m_window->draw(m_score_values);
+        m_window->draw(m_left_score);
+        m_window->draw(m_right_score);
         m_window->display();
     }
 

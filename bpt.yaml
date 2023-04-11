@@ -3,9 +3,7 @@ version: 0.1.0
 
 dependencies:
   - crank@0.2.0
-
-# test-dependencies:
-#   - catch2@2.13.9 using main
+  - fmt@9.1.0
 
 readme: README.md
 
