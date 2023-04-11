@@ -147,27 +147,31 @@ namespace pong::states
             else if (event.type == sf::Event::KeyPressed)
                 switch (event.key.code)
                 {
-                    case sf::Keyboard::Escape:
-                        m_window->close();
-                        break;
-                    case sf::Keyboard::W:
+                case sf::Keyboard::Escape:
+                    m_window->close();
+                    break;
+                case sf::Keyboard::W:
+                    if (!m_left_paddle.getGlobalBounds().intersects(m_top_boundary))
                         m_left_paddle.move_up();
-                        break;
-                    case sf::Keyboard::S:
+                    break;
+                case sf::Keyboard::S:
+                    if (!m_left_paddle.getGlobalBounds().intersects(m_bottom_boundary))
                         m_left_paddle.move_down();
-                        break;
-                    case sf::Keyboard::I:
+                    break;
+                case sf::Keyboard::I:
+                    if (!m_right_paddle.getGlobalBounds().intersects(m_top_boundary))
                         m_right_paddle.move_up();
-                        break;
-                    case sf::Keyboard::K:
+                    break;
+                case sf::Keyboard::K:
+                    if (!m_right_paddle.getGlobalBounds().intersects(m_bottom_boundary))
                         m_right_paddle.move_down();
-                        break;
-                    case sf::Keyboard::Space:
-                        if (!m_running)
-                            start_game();
-                        break;
-                    default:
-                        break;
+                    break;
+                case sf::Keyboard::Space:
+                    if (!m_running)
+                        start_game();
+                    break;
+                default:
+                    break;
                 }
     }
 
@@ -178,10 +182,8 @@ namespace pong::states
 
         if (m_ball.getGlobalBounds().intersects(m_top_boundary))
             m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) + 4);
-            // m_ball.get_direction() = m_ball.get_direction() == direction_type::UPLEFT ? direction_type::DOWNLEFT : direction_type::DOWNRIGHT;
         else if (m_ball.getGlobalBounds().intersects(m_bottom_boundary))
             m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) - 4);
-            // m_ball.get_direction() = m_ball.get_direction() == direction_type::DOWNLEFT ? direction_type::UPLEFT : direction_type::UPRIGHT;
         else if (m_ball.getGlobalBounds().intersects(m_left_boundary))
         {
             m_ball.get_direction() = direction_type::STOP;
@@ -197,9 +199,55 @@ namespace pong::states
             m_running = false;
         }
         else if (m_ball.getGlobalBounds().intersects(m_left_paddle.as_bounds()))
-            m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) + 1);
+        {
+            if (m_ball.get_direction() == direction_type::LEFT)
+            {
+                auto eng            = std::default_random_engine{ std::random_device{}() };
+                auto rand           = std::uniform_int_distribution{ 1, 3 };
+                
+                switch (rand(eng))
+                {
+                case 1:
+                    m_ball.get_direction() = direction_type::UPRIGHT;
+                    break;
+
+                case 2:
+                    m_ball.get_direction() = direction_type::DOWNRIGHT;
+                    break;
+                
+                case 3:
+                    m_ball.get_direction() = direction_type::RIGHT;
+                    break;
+                }
+            }
+            else
+                m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) + 1);
+        }
         else if (m_ball.getGlobalBounds().intersects(m_right_paddle.as_bounds()))
-            m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) - 1);
+        {
+            if (m_ball.get_direction() == direction_type::RIGHT)
+            {
+                auto eng            = std::default_random_engine{ std::random_device{}() };
+                auto rand           = std::uniform_int_distribution{ 1, 3 };
+                
+                switch (rand(eng))
+                {
+                case 1:
+                    m_ball.get_direction() = direction_type::UPLEFT;
+                    break;
+
+                case 2:
+                    m_ball.get_direction() = direction_type::DOWNLEFT;
+                    break;
+                
+                case 3:
+                    m_ball.get_direction() = direction_type::LEFT;
+                    break;
+                }
+            }
+            else
+                m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) - 1);
+        }
     }
 
     void main_game::render([[maybe_unused]] crank::engine& eng) noexcept
