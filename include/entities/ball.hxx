@@ -40,7 +40,7 @@ namespace pong::entities
             : sf::CircleShape(radius)
             , m_direction{ direction::STOP }
         {
-            setOrigin(radius / 2.0f, radius / 2.0f);
+            setOrigin(radius, radius);
             setPosition(sf::Vector2f(xpos, ypos));
             setFillColor(colour);
         }

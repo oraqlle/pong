@@ -31,7 +31,6 @@ namespace pong::entities
             : sf::RectangleShape(sf::Vector2f(width, height))
         {
             setOrigin(width / 2.0f, height / 2.0f);
-            setRotation(180);
             setPosition(sf::Vector2f(xpos, ypos));
             setFillColor(colour);
         }

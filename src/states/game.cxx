@@ -3,6 +3,10 @@
 #include <crank/crank.hxx>
 #include <fmt/core.h>
 #include <fmt/format.h>
+#include <fmt/ranges.h>
+#include <range/v3/core.hpp>
+#include <range/v3/view/repeat.hpp>
+#include <range/v3/view/take.hpp>
 #include <SFML/Graphics.hpp>
 
 #include <filesystem>
@@ -35,6 +39,7 @@ namespace pong::states
         , m_running{ false }
         , m_left_score{ text_type{} }
         , m_right_score{ text_type{} }
+        , m_divider{ }
         , m_font{ font_type{} }
     {
         auto [w, h] = static_cast<sf::Vector2f>(m_window->getSize());
@@ -103,18 +108,33 @@ namespace pong::states
         m_left_score.setString("00"s);
         m_left_score.setStyle(text_type::Bold);
         m_left_score.setCharacterSize(static_cast<unsigned>(0.05f * h));
-        auto label_txt_w = m_left_score.getLocalBounds().width;
-        auto label_txt_h = m_left_score.getLocalBounds().height;
-        m_left_score.setOrigin(label_txt_w / 2.0f, label_txt_h / 2.0f);
-        m_left_score.setPosition(w * 0.1f, label_txt_h);
+        auto left_score_txt_w = m_left_score.getLocalBounds().width;
+        auto left_score_txt_h = m_left_score.getLocalBounds().height;
+        m_left_score.setOrigin(left_score_txt_w / 2.0f, left_score_txt_h / 2.0f);
+        m_left_score.setPosition(w * 0.1f, left_score_txt_h);
 
         m_right_score.setFont(m_font);
         m_right_score.setString("00"s);
         m_right_score.setCharacterSize(static_cast<unsigned>(0.05f * h));
-        auto values_txt_w = m_right_score.getLocalBounds().width;
-        auto values_txt_h = m_right_score.getLocalBounds().height;
-        m_right_score.setOrigin(values_txt_w / 2.0f, values_txt_h / 2.0f);
-        m_right_score.setPosition(w - (w * 0.1f), label_txt_h);
+        auto right_score_txt_w = m_right_score.getLocalBounds().width;
+        auto right_score_txt_h = m_right_score.getLocalBounds().height;
+        m_right_score.setOrigin(right_score_txt_w / 2.0f, right_score_txt_h / 2.0f);
+        m_right_score.setPosition(w - (w * 0.1f), left_score_txt_h);
+        
+        using sz_t = decltype(m_divider)::size_type;
+        m_divider.resize(static_cast<sz_t>(h / 25.0f));
+        std::ranges::generate(
+            m_divider,
+            [&w, &h, &colour, n=0]() mutable {
+                auto r = sf::RectangleShape{ sf::Vector2f(6.0f, 20.0f) };
+                r.setFillColor(colour);
+                auto [rw, rh] = r.getSize();
+                r.setOrigin(rw / 2.0f, rh / 2.0f);
+                r.setPosition(sf::Vector2f(w / 2.0f, static_cast<float>(n) * 25.0f));
+                n += 1;
+                return r;
+            }
+        );
     }
 
     void main_game::init([[maybe_unused]] crank::engine& eng) noexcept
@@ -263,6 +283,7 @@ namespace pong::states
         m_window->draw(m_right_paddle);
         m_window->draw(m_left_score);
         m_window->draw(m_right_score);
+        std::ranges::for_each(m_divider, [this](auto& r){ this->m_window->draw(r); });
         m_window->display();
     }
 

@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <utility>
+#include <vector>
 
 namespace pong::states
 {
@@ -65,6 +66,7 @@ namespace pong::states
         bool m_running;
         text_type m_left_score;
         text_type m_right_score;
+        std::vector<sf::RectangleShape> m_divider;
         font_type m_font;
 
     };  //< class game
