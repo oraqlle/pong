@@ -64,10 +64,12 @@ namespace pong::states
         boundary_type m_right_boundary;
         std::pair<unsigned, unsigned> m_scores;
         bool m_running;
+        font_type m_font;
         text_type m_left_score;
         text_type m_right_score;
+        text_type m_start_text;
+        sf::RectangleShape m_start_tile;
         std::vector<sf::RectangleShape> m_divider;
-        font_type m_font;
 
     };  //< class game
 

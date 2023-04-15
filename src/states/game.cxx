@@ -28,19 +28,21 @@ namespace pong::states
         sf::Color colour
     ) noexcept
         : m_window{ window }
-        , m_ball{ ball_type{}  }
-        , m_left_paddle{ paddle_type{} }
-        , m_right_paddle{ paddle_type{} }
-        , m_top_boundary{ boundary_type{} }
-        , m_bottom_boundary{ boundary_type{} }
-        , m_left_boundary{ boundary_type{} }
-        , m_right_boundary{ boundary_type{} }
+        , m_ball{ }
+        , m_left_paddle{ }
+        , m_right_paddle{ }
+        , m_top_boundary{ }
+        , m_bottom_boundary{ }
+        , m_left_boundary{ }
+        , m_right_boundary{ }
         , m_scores{ 0u, 0u }
         , m_running{ false }
-        , m_left_score{ text_type{} }
-        , m_right_score{ text_type{} }
+        , m_font{ }
+        , m_left_score{ }
+        , m_right_score{ }
+        , m_start_text{ }
+        , m_start_tile{ }
         , m_divider{ }
-        , m_font{ font_type{} }
     {
         auto [w, h] = static_cast<sf::Vector2f>(m_window->getSize());
         m_ball.setFillColor(colour);
@@ -106,7 +108,7 @@ namespace pong::states
 
         m_left_score.setFont(m_font);
         m_left_score.setString("00"s);
-        m_left_score.setStyle(text_type::Bold);
+        m_left_score.setStyle(text_type::Style::Bold);
         m_left_score.setCharacterSize(static_cast<unsigned>(0.05f * h));
         auto left_score_txt_w = m_left_score.getLocalBounds().width;
         auto left_score_txt_h = m_left_score.getLocalBounds().height;
@@ -120,6 +122,30 @@ namespace pong::states
         auto right_score_txt_h = m_right_score.getLocalBounds().height;
         m_right_score.setOrigin(right_score_txt_w / 2.0f, right_score_txt_h / 2.0f);
         m_right_score.setPosition(w - (w * 0.1f), left_score_txt_h);
+
+        m_start_text.setFont(m_font);
+        m_start_text.setString("Press 'Space' To Start"s);
+        m_start_text.setStyle(text_type::Style::Underlined | text_type::Style::Bold);
+        auto start_txt_width = m_start_text.getLocalBounds().width;
+        auto start_txt_height = m_start_text.getLocalBounds().height;
+        m_start_text.setOrigin(start_txt_width / 2.0f, start_txt_height / 2.0f);
+        m_start_text.setPosition(w / 2.0f, h / 2.0f);
+        auto [r, g, b, _] = colour;
+        m_start_text.setFillColor(sf::Color{
+            static_cast<sf::Uint8>(255 - r),
+            static_cast<sf::Uint8>(255 - g),
+            static_cast<sf::Uint8>(255 - b)
+        });
+
+        m_start_tile.setSize(sf::Vector2f{ 
+            start_txt_width + (0.1f * start_txt_width),
+            start_txt_height * 2.0f 
+        });
+        auto [tile_w, tile_h] = m_start_tile.getSize();
+        m_start_tile.setOrigin(tile_w / 2.0f, tile_h / 2.0f);
+        m_start_tile.setPosition(w / 2.0f, h / 2.0f);
+        m_start_tile.setFillColor(colour);
+        
         
         using sz_t = decltype(m_divider)::size_type;
         m_divider.resize(static_cast<sz_t>(h / 25.0f));
@@ -130,7 +156,7 @@ namespace pong::states
                 r.setFillColor(colour);
                 auto [rw, rh] = r.getSize();
                 r.setOrigin(rw / 2.0f, rh / 2.0f);
-                r.setPosition(sf::Vector2f(w / 2.0f, static_cast<float>(n) * 25.0f));
+                r.setPosition(w / 2.0f, static_cast<float>(n) * 25.0f);
                 n += 1;
                 return r;
             }
@@ -278,12 +304,19 @@ namespace pong::states
         m_right_score.setString(fmt::format("{:02}", p2));
 
         m_window->clear();
-        m_window->draw(m_ball);
-        m_window->draw(m_left_paddle);
-        m_window->draw(m_right_paddle);
+        std::ranges::for_each(m_divider, [this](auto& r){ this->m_window->draw(r); });
         m_window->draw(m_left_score);
         m_window->draw(m_right_score);
-        std::ranges::for_each(m_divider, [this](auto& r){ this->m_window->draw(r); });
+        m_window->draw(m_left_paddle);
+        m_window->draw(m_right_paddle);
+        m_window->draw(m_ball);
+
+        if (!m_running)
+        {
+            m_window->draw(m_start_tile);
+            m_window->draw(m_start_text);
+        }
+
         m_window->display();
     }
 
