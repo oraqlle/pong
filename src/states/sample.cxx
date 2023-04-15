@@ -36,6 +36,16 @@ namespace pong::states
         while (m_window->pollEvent(event))
             if (event.type == sf::Event::Closed)
                 m_window->close();
+            else if (event.type == sf::Event::KeyPressed)
+                switch (event.key.code)
+                {
+                case sf::Keyboard::Escape:
+                    m_window->close();
+                    break;
+                
+                default:
+                    break;
+                }
     }
 
     void sample::update([[maybe_unused]] crank::engine& eng) noexcept
