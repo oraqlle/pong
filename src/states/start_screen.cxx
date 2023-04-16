@@ -6,6 +6,8 @@
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <numeric>
+#include <ranges>
 #include <source_location>
 #include <string>
 
@@ -36,7 +38,7 @@ namespace pong::states
         auto [w, h] = static_cast<sf::Vector2f>(m_window->getSize());
 
         m_title_text.setFont(m_font);
-        m_title_text.setString("Pong");
+        m_title_text.setString("Pong"s);
         m_title_text.setStyle(text_type::Style::Bold | text_type::Style::Underlined);
         m_title_text.setCharacterSize(static_cast<unsigned>(0.1f * h));
         auto title_w = m_title_text.getGlobalBounds().width;
@@ -45,7 +47,7 @@ namespace pong::states
         m_title_text.setPosition(w / 2.0f, 0.3f * h);
 
         m_play_text.setFont(m_font);
-        m_play_text.setString("> Play <");
+        m_play_text.setString("> Play <"s);
         m_play_text.setStyle(text_type::Style::Bold);
         m_play_text.setCharacterSize(static_cast<unsigned>(0.04f * h));
         auto play_w = m_play_text.getGlobalBounds().width;
@@ -54,7 +56,7 @@ namespace pong::states
         m_play_text.setPosition(w / 2.0f, h / 2.0f);
 
         m_controls_text.setFont(m_font);
-        m_controls_text.setString("Controls");
+        m_controls_text.setString("  Controls  "s);
         m_controls_text.setStyle(text_type::Style::Bold);
         m_controls_text.setCharacterSize(static_cast<unsigned>(0.04f * h));
         auto ctrl_w = m_controls_text.getGlobalBounds().width;
@@ -63,7 +65,7 @@ namespace pong::states
         m_controls_text.setPosition(w / 2.0f, h * 0.6f);
 
         m_quit_text.setFont(m_font);
-        m_quit_text.setString("Quit to Desktop");
+        m_quit_text.setString("  Quit  "s);
         m_quit_text.setStyle(text_type::Style::Bold);
         m_quit_text.setCharacterSize(static_cast<unsigned>(0.04f * h));
         auto quit_w = m_quit_text.getGlobalBounds().width;
@@ -96,6 +98,22 @@ namespace pong::states
                 case sf::Keyboard::Escape:
                     m_window->close();
                     break;
+
+                case sf::Keyboard::Up:
+                    m_cursor_pos = static_cast<cursor_position>(std::ranges::clamp(
+                        static_cast<int>(m_cursor_pos) - 1,
+                        static_cast<int>(cursor_position::PLAY),
+                        static_cast<int>(cursor_position::QUIT)
+                    ));
+                    break;
+
+                case sf::Keyboard::Down:
+                    m_cursor_pos = static_cast<cursor_position>(std::ranges::clamp(
+                        static_cast<int>(m_cursor_pos) + 1,
+                        static_cast<int>(cursor_position::PLAY),
+                        static_cast<int>(cursor_position::QUIT)
+                    ));
+                    break;
                 
                 default:
                     break;
@@ -103,7 +121,31 @@ namespace pong::states
     }
 
     void start_screen::update([[maybe_unused]] crank::engine& eng) noexcept
-    { }
+    {
+        switch (m_cursor_pos)
+        {
+        case cursor_position::PLAY:
+            m_play_text.setString("> Play <"s);
+            m_controls_text.setString("  Controls  "s);
+            m_quit_text.setString("  Quit  "s);
+            break;
+
+        case cursor_position::CONTROLS:
+            m_play_text.setString("  Play  "s);
+            m_controls_text.setString("> Controls <"s);
+            m_quit_text.setString("  Quit  "s);
+            break;
+
+        case cursor_position::QUIT:
+            m_play_text.setString("  Play  "s);
+            m_controls_text.setString("  Controls  "s);
+            m_quit_text.setString("> Quit <"s);
+            break;
+        
+        default:
+            break;
+        }
+    }
 
     void start_screen::render([[maybe_unused]] crank::engine& eng) noexcept
     { 
