@@ -19,6 +19,11 @@ auto main() -> int
         sf::Color::Green
     );
 
+    engine.make_factory_for<pong::states::start_screen>(
+        id::START,
+        window
+    );
+
     engine.make_factory_for<pong::states::main_game>(
         id::GAME,
         window,
@@ -26,12 +31,7 @@ auto main() -> int
         sf::Color::White
     );
 
-    engine.make_factory_for<pong::states::start_screen>(
-        id::START,
-        window
-    );
-
-    engine.change_state(id::GAME);
+    engine.change_state(id::START);
 
     while (window->isOpen())
     {

@@ -14,6 +14,17 @@ namespace pong::states
     {
     public:
 
+        using font_type = sf::Font;
+        using text_type = sf::Text;
+
+    public:
+
+        enum class cursor_position 
+            : short 
+        { PLAY, CONTROLS, QUIT };
+
+    public:
+
         explicit start_screen(
             std::shared_ptr<sf::RenderWindow> window
         ) noexcept;
@@ -39,6 +50,12 @@ namespace pong::states
     protected:
 
         std::shared_ptr<sf::RenderWindow> m_window;
+        cursor_position m_cursor_pos;
+        font_type m_font;
+        text_type m_title_text;
+        text_type m_play_text;
+        text_type m_controls_text;
+        text_type m_quit_text;
 
     };  /// class start_screen
 
