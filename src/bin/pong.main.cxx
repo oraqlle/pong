@@ -1,3 +1,4 @@
+#include <states/id.hxx>
 #include <states/game.hxx>
 #include <states/sample.hxx>
 #include <states/start_screen.hxx>
@@ -5,33 +6,31 @@
 #include <memory>
 #include <utility>
 
-enum id { SAMPLE, GAME, START };
-
 auto main() -> int
 {
     auto window = std::make_shared<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Pong", sf::Style::Fullscreen);
     auto engine = crank::engine{};
     
     engine.make_factory_for<pong::states::sample>(
-        id::SAMPLE,
+        pong::states::id::SAMPLE,
         window,
         12.5f,
         sf::Color::Green
     );
 
     engine.make_factory_for<pong::states::start_screen>(
-        id::START,
+        pong::states::id::START,
         window
     );
 
     engine.make_factory_for<pong::states::main_game>(
-        id::GAME,
+        pong::states::id::GAME,
         window,
         12.5f,
         sf::Color::White
     );
 
-    engine.change_state(id::START);
+    engine.change_state(pong::states::id::START);
 
     while (window->isOpen())
     {

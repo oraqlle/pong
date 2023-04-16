@@ -47,6 +47,8 @@ namespace pong::states
 
         start_screen() = default;
 
+        void option_select(crank::engine& eng) noexcept;
+
     protected:
 
         std::shared_ptr<sf::RenderWindow> m_window;

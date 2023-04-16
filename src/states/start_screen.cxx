@@ -1,3 +1,4 @@
+#include <states/id.hxx>
 #include <states/start_screen.hxx>
 
 #include <crank/crank.hxx>
@@ -86,7 +87,7 @@ namespace pong::states
     void start_screen::resume() noexcept
     { }
 
-    void start_screen::handle_events([[maybe_unused]] crank::engine& eng) noexcept
+    void start_screen::handle_events(crank::engine& eng) noexcept
     { 
         auto event = sf::Event{};
         while (m_window->pollEvent(event))
@@ -95,10 +96,6 @@ namespace pong::states
             else if (event.type == sf::Event::KeyPressed)
                 switch (event.key.code)
                 {
-                case sf::Keyboard::Escape:
-                    m_window->close();
-                    break;
-
                 case sf::Keyboard::Up:
                     m_cursor_pos = static_cast<cursor_position>(std::ranges::clamp(
                         static_cast<int>(m_cursor_pos) - 1,
@@ -113,6 +110,10 @@ namespace pong::states
                         static_cast<int>(cursor_position::PLAY),
                         static_cast<int>(cursor_position::QUIT)
                     ));
+                    break;
+
+                case sf::Keyboard::Enter:
+                    option_select(eng);
                     break;
                 
                 default:
@@ -155,6 +156,25 @@ namespace pong::states
         m_window->draw(m_controls_text);
         m_window->draw(m_quit_text);
         m_window->display();
+    }
+
+    void start_screen::option_select(crank::engine& eng) noexcept
+    {
+        switch (m_cursor_pos)
+        {
+        case cursor_position::PLAY:
+            eng.change_state(states::id::GAME);
+            break;
+
+        case cursor_position::CONTROLS:
+            break;
+
+        case cursor_position::QUIT:
+            m_window->close();
+        
+        default:
+            break;
+        }
     }
 
 }  /// namespace pong::states
