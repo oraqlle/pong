@@ -19,19 +19,12 @@ namespace pong::states
 {
 
     start_screen::start_screen(
-        std::shared_ptr<sf::RenderWindow> window
-    ) noexcept
-        : m_window{ window }
-        , m_cursor_pos { cursor_position::PLAY }
-        , m_font{ }
-        , m_title_text{ }
-        , m_play_text{ }
-        , m_controls_text{ }
-        , m_quit_text{ }
+        std::shared_ptr<sf::RenderWindow> window) noexcept
+        : m_window{window}, m_cursor_pos{cursor_position::PLAY}, m_font{}, m_title_text{}, m_play_text{}, m_controls_text{}, m_quit_text{}
     {
-        auto srcloc         = std::source_location::current();
-        auto src_path       = fs::path(srcloc.file_name());
-        auto asset_path     = src_path.remove_filename() / "../../fonts"s;
+        auto srcloc = std::source_location::current();
+        auto src_path = fs::path(srcloc.file_name());
+        auto asset_path = src_path.remove_filename() / "../../fonts"s;
 
         if (!m_font.loadFromFile(asset_path / "JetBrainsMonoNF.ttf"s))
             std::clog << "Error loading font!" << std::endl;
@@ -75,20 +68,24 @@ namespace pong::states
         m_quit_text.setPosition(w / 2.0f, h * 0.7f);
     }
 
-    void start_screen::init([[maybe_unused]] crank::engine& eng) noexcept
-    { }
+    void start_screen::init([[maybe_unused]] crank::engine &eng) noexcept
+    {
+    }
 
     void start_screen::cleanup() noexcept
-    { }
+    {
+    }
 
     void start_screen::pause() noexcept
-    { }
+    {
+    }
 
     void start_screen::resume() noexcept
-    { }
+    {
+    }
 
-    void start_screen::handle_events(crank::engine& eng) noexcept
-    { 
+    void start_screen::handle_events(crank::engine &eng) noexcept
+    {
         auto event = sf::Event{};
         while (m_window->pollEvent(event))
             if (event.type == sf::Event::Closed)
@@ -100,28 +97,26 @@ namespace pong::states
                     m_cursor_pos = static_cast<cursor_position>(std::ranges::clamp(
                         static_cast<int>(m_cursor_pos) - 1,
                         static_cast<int>(cursor_position::PLAY),
-                        static_cast<int>(cursor_position::QUIT)
-                    ));
+                        static_cast<int>(cursor_position::QUIT)));
                     break;
 
                 case sf::Keyboard::Down:
                     m_cursor_pos = static_cast<cursor_position>(std::ranges::clamp(
                         static_cast<int>(m_cursor_pos) + 1,
                         static_cast<int>(cursor_position::PLAY),
-                        static_cast<int>(cursor_position::QUIT)
-                    ));
+                        static_cast<int>(cursor_position::QUIT)));
                     break;
 
                 case sf::Keyboard::Enter:
                     option_select(eng);
                     break;
-                
+
                 default:
                     break;
                 }
     }
 
-    void start_screen::update([[maybe_unused]] crank::engine& eng) noexcept
+    void start_screen::update([[maybe_unused]] crank::engine &eng) noexcept
     {
         switch (m_cursor_pos)
         {
@@ -142,14 +137,14 @@ namespace pong::states
             m_controls_text.setString("  Controls  "s);
             m_quit_text.setString("> Quit <"s);
             break;
-        
+
         default:
             break;
         }
     }
 
-    void start_screen::render([[maybe_unused]] crank::engine& eng) noexcept
-    { 
+    void start_screen::render([[maybe_unused]] crank::engine &eng) noexcept
+    {
         m_window->clear();
         m_window->draw(m_title_text);
         m_window->draw(m_play_text);
@@ -158,12 +153,12 @@ namespace pong::states
         m_window->display();
     }
 
-    void start_screen::option_select(crank::engine& eng) noexcept
+    void start_screen::option_select(crank::engine &eng) noexcept
     {
         switch (m_cursor_pos)
         {
         case cursor_position::PLAY:
-            eng.change_state(states::id::GAME);
+            eng.push_state(states::id::GAME);
             break;
 
         case cursor_position::CONTROLS:
@@ -171,10 +166,11 @@ namespace pong::states
 
         case cursor_position::QUIT:
             m_window->close();
-        
+            break;
+
         default:
             break;
         }
     }
 
-}  /// namespace pong::states
+} /// namespace pong::states
