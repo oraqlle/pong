@@ -42,7 +42,7 @@ public:
 protected:
     start_screen() = default;
 
-    void option_select(crank::engine& eng) noexcept;
+    void option_select(crank::engine& eng) const noexcept;
 
 private:
     std::shared_ptr<sf::RenderWindow> m_window;

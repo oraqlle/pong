@@ -1,5 +1,6 @@
 #include <states/id.hxx>
 #include <states/start_screen.hxx>
+#include <utils/match.hxx>
 #include <utils/src.hxx>
 
 #include <SFML/Graphics.hpp>
@@ -12,8 +13,8 @@
 #include <memory>
 #include <numeric>
 #include <ranges>
-#include <source_location>
 #include <string>
+#include <variant>
 
 using namespace std::literals;
 namespace fs = std::filesystem;
@@ -156,23 +157,33 @@ void start_screen::render([[maybe_unused]] crank::engine& eng) noexcept
     m_window->display();
 }
 
-void start_screen::option_select(crank::engine& eng) noexcept
+void start_screen::option_select(crank::engine& eng) const noexcept
 {
+    auto result = crank::result_type<std::monostate, std::string> {};
+
     switch (m_cursor_pos) {
-    case cursor_position::PLAY:
-        eng.push_state(states::id::GAME);
+        using enum cursor_position;
+    case PLAY:
+        result = eng.push_state(states::id::GAME);
         break;
 
-    case cursor_position::CONTROLS:
+    case CONTROLS:
+        result = eng.push_state(states::id::CONTROLS);
         break;
 
-    case cursor_position::QUIT:
+    case QUIT:
         m_window->close();
         break;
 
     default:
         break;
     }
+
+    std::visit(
+        pong::utils::match {
+            [](const std::monostate&) {},
+            [](const std::string& msg) { std::clog << msg << std::endl; } },
+        result);
 }
 
 } /// namespace pong::states

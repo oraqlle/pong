@@ -1,5 +1,5 @@
+#include <states/control_menu.hxx>
 #include <states/id.hxx>
-#include <states/menu.hxx>
 #include <utils/src.hxx>
 
 #include <SFML/Graphics.hpp>
@@ -20,7 +20,7 @@ namespace fs = std::filesystem;
 
 namespace pong::states {
 
-menu::menu(std::shared_ptr<sf::RenderWindow> window) noexcept
+control_menu::control_menu(std::shared_ptr<sf::RenderWindow> window) noexcept
     : m_window { window }
 {
     auto asset_path = fs::weakly_canonical(
@@ -64,23 +64,23 @@ menu::menu(std::shared_ptr<sf::RenderWindow> window) noexcept
     m_main_text.setPosition(w / 2.0f, h / 2.0f);
 }
 
-void menu::init([[maybe_unused]] crank::engine& eng) noexcept
+void control_menu::init([[maybe_unused]] crank::engine& eng) noexcept
 {
 }
 
-void menu::cleanup() noexcept
+void control_menu::cleanup() noexcept
 {
 }
 
-void menu::pause() noexcept
+void control_menu::pause() noexcept
 {
 }
 
-void menu::resume() noexcept
+void control_menu::resume() noexcept
 {
 }
 
-void menu::handle_events(crank::engine& eng) noexcept
+void control_menu::handle_events(crank::engine& eng) noexcept
 {
     auto event = sf::Event {};
     while (m_window->pollEvent(event))
@@ -89,7 +89,7 @@ void menu::handle_events(crank::engine& eng) noexcept
         else if (event.type == sf::Event::KeyPressed)
             switch (event.key.code) {
             case sf::Keyboard::Escape: {
-                auto rid = eng.pop_state<std::size_t>();
+                auto rid = eng.pop_state<pong::states::id>();
                 break;
             }
             default:
@@ -97,11 +97,11 @@ void menu::handle_events(crank::engine& eng) noexcept
             }
 }
 
-void menu::update([[maybe_unused]] crank::engine& eng) noexcept
+void control_menu::update([[maybe_unused]] crank::engine& eng) noexcept
 {
 }
 
-void menu::render([[maybe_unused]] crank::engine& eng) noexcept
+void control_menu::render([[maybe_unused]] crank::engine& eng) noexcept
 {
     m_window->clear();
     m_window->draw(m_title_text);

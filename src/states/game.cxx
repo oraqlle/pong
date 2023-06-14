@@ -1,4 +1,6 @@
 #include <states/game.hxx>
+#include <states/id.hxx>
+#include <utils/match.hxx>
 #include <utils/src.hxx>
 
 #include <SFML/Graphics.hpp>
@@ -183,9 +185,18 @@ void main_game::handle_events([[maybe_unused]] crank::engine& eng) noexcept
             m_window->close();
         else if (event.type == sf::Event::KeyPressed)
             switch (event.key.code) {
-            case sf::Keyboard::Escape:
-                m_window->close();
+            case sf::Keyboard::Escape: {
+                auto result = eng.change_state(pong::states::id::START);
+
+                std::visit(
+                    pong::utils::match {
+                        [](const std::monostate&) {},
+                        [](const std::string& msg) {
+                            std::clog << msg << std::endl;
+                        } },
+                    result);
                 break;
+            }
             case sf::Keyboard::W:
                 if (!m_left_paddle.getGlobalBounds().intersects(m_top_boundary))
                     m_left_paddle.move_up();
@@ -232,10 +243,10 @@ void main_game::update([[maybe_unused]] crank::engine& eng) noexcept
         m_running = false;
     } else if (m_ball.getGlobalBounds().intersects(m_left_paddle.as_bounds())) {
         if (m_ball.get_direction() == direction_type::LEFT) {
-            auto eng = std::default_random_engine { std::random_device {}() };
+            auto gen = std::default_random_engine { std::random_device {}() };
             auto rand = std::uniform_int_distribution { 1, 3 };
 
-            switch (rand(eng)) {
+            switch (rand(gen)) {
             case 1:
                 m_ball.get_direction() = direction_type::UPRIGHT;
                 break;
@@ -247,15 +258,18 @@ void main_game::update([[maybe_unused]] crank::engine& eng) noexcept
             case 3:
                 m_ball.get_direction() = direction_type::RIGHT;
                 break;
+
+            default:
+                break;
             }
         } else
             m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) + 1);
     } else if (m_ball.getGlobalBounds().intersects(m_right_paddle.as_bounds())) {
         if (m_ball.get_direction() == direction_type::RIGHT) {
-            auto eng = std::default_random_engine { std::random_device {}() };
+            auto gen = std::default_random_engine { std::random_device {}() };
             auto rand = std::uniform_int_distribution { 1, 3 };
 
-            switch (rand(eng)) {
+            switch (rand(gen)) {
             case 1:
                 m_ball.get_direction() = direction_type::UPLEFT;
                 break;
@@ -266,6 +280,8 @@ void main_game::update([[maybe_unused]] crank::engine& eng) noexcept
 
             case 3:
                 m_ball.get_direction() = direction_type::LEFT;
+                break;
+            default:
                 break;
             }
         } else

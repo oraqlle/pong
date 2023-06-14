@@ -10,13 +10,13 @@
 
 namespace pong::states {
 
-class menu : public crank::states::state_interface {
+class control_menu : public crank::states::state_interface {
 public:
     using font_type = sf::Font;
     using text_type = sf::Text;
 
 public:
-    explicit menu(std::shared_ptr<sf::RenderWindow> window) noexcept;
+    explicit control_menu(std::shared_ptr<sf::RenderWindow> window) noexcept;
 
     void init(crank::engine& engine) noexcept;
 
@@ -33,7 +33,7 @@ public:
     void render(crank::engine& eng) noexcept;
 
 protected:
-    menu() = default;
+    control_menu() = default;
 
     void option_select(crank::engine& eng) noexcept;
 
@@ -44,7 +44,7 @@ private:
     text_type m_main_text;
     text_type m_back_text;
 
-}; /// class menu
+}; /// class control_menu
 
 } // namespace pong::states
 

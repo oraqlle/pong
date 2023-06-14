@@ -1,18 +1,16 @@
 #ifndef PONG_ENTITIES_BALL
-#   define PONG_ENTITIES_BALL
+#define PONG_ENTITIES_BALL
 
 #include <SFML/Graphics.hpp>
 
 #include <memory>
 #include <utility>
 
-namespace pong::entities
-{
-    class ball
-        : public sf::CircleShape
-    {
-    public:
-
+namespace pong::entities {
+class ball
+    : public sf::CircleShape {
+public:
+    // clang-format off
         enum class direction
             : unsigned short
         { 
@@ -20,101 +18,102 @@ namespace pong::entities
             LEFT = 3, STOP = 0, RIGHT = 4,
             DOWNLEFT = 5, DOWN = 8, DOWNRIGHT = 6
         };
+    // clang-format on
 
-        using colour_type   = sf::Color;
-        using float_type    = float;
+    using colour_type = sf::Color;
+    using float_type = float;
 
-    public:
+public:
+    ball() noexcept
+        : sf::CircleShape()
+        , m_direction { direction::STOP }
+    {
+    }
 
-        ball() noexcept
-            : sf::CircleShape()
-            , m_direction{ direction::STOP }
-        { }
+    explicit ball(
+        float_type radius,
+        float_type xpos,
+        float_type ypos,
+        colour_type colour) noexcept
+        : sf::CircleShape(radius)
+        , m_direction { direction::STOP }
+    {
+        setOrigin(radius, radius);
+        setPosition(sf::Vector2f(xpos, ypos));
+        setFillColor(colour);
+    }
 
-        explicit ball(
-            float_type radius,
-            float_type xpos,
-            float_type ypos,
-            colour_type colour
-        ) noexcept
-            : sf::CircleShape(radius)
-            , m_direction{ direction::STOP }
-        {
-            setOrigin(radius, radius);
-            setPosition(sf::Vector2f(xpos, ypos));
-            setFillColor(colour);
+    auto get_direction() noexcept
+        -> direction&
+    {
+        return m_direction;
+    }
+
+    auto get_direction() const noexcept
+        -> const direction&
+    {
+        return m_direction;
+    }
+
+    auto move() noexcept
+        -> void
+    {
+        auto [xpos, ypos] = getPosition();
+
+        switch (m_direction) {
+        case direction::UPLEFT:
+            xpos -= m_xspeed;
+            ypos -= m_yspeed;
+            break;
+
+        case direction::UP:
+            ypos -= m_yspeed;
+            break;
+
+        case direction::UPRIGHT:
+            xpos += m_xspeed;
+            ypos -= m_yspeed;
+            break;
+
+        case direction::LEFT:
+            xpos -= m_xspeed;
+            break;
+
+        case direction::STOP:
+            break;
+
+        case direction::RIGHT:
+            xpos += m_xspeed;
+            break;
+
+        case direction::DOWNLEFT:
+            xpos -= m_xspeed;
+            ypos += m_yspeed;
+            break;
+
+        case direction::DOWN:
+            ypos += m_yspeed;
+            break;
+
+        case direction::DOWNRIGHT:
+            xpos += m_xspeed;
+            ypos += m_yspeed;
+            break;
+
+        default:
+            break;
         }
 
-        auto get_direction() noexcept
-            -> direction&
-        { return m_direction; }
+        setPosition(sf::Vector2f(xpos, ypos));
+    }
 
-        auto get_direction() const noexcept
-            -> const direction&
-        { return m_direction; }
+private:
+    static constexpr float_type m_xspeed = 2.25f;
+    static constexpr float_type m_yspeed = 2.125f;
+    direction m_direction;
 
-        auto move() noexcept
-            -> void
-        {
-            auto [xpos, ypos] = getPosition();
+}; //< class ball
 
+} //< namespace pong::entities
 
-            switch (m_direction)
-            {
-                case direction::UPLEFT:
-                    xpos -= m_xspeed;
-                    ypos -= m_yspeed;
-                    break;
-
-                case direction::UP:
-                    ypos -= m_yspeed;
-                    break;
-
-                case direction::UPRIGHT:
-                    xpos += m_xspeed;
-                    ypos -= m_yspeed;
-                    break;
-
-                case direction::LEFT:
-                    xpos -= m_xspeed;
-                    break;
-
-                case direction::STOP:
-                    break;
-
-                case direction::RIGHT:
-                    xpos += m_xspeed;
-                    break;
-
-                case direction::DOWNLEFT:
-                    xpos -= m_xspeed;
-                    ypos += m_yspeed;
-                    break;
-
-                case direction::DOWN:
-                    ypos += m_yspeed;
-                    break;
-
-                case direction::DOWNRIGHT:
-                    xpos += m_xspeed;
-                    ypos += m_yspeed;
-                    break;
-                
-                default:
-                    break;
-            }
-
-            setPosition(sf::Vector2f(xpos, ypos));
-        }
-
-    private:
-
-        static constexpr float_type m_xspeed = 2.5f;
-        static constexpr float_type m_yspeed = 2.250f;
-        direction m_direction;
-
-    };  //< class ball
-
-}  //< namespace pong::entities
-
-#endif  //< PONG_ENTITIES_BALL
+#endif //< PONG_ENTITIES_BALL

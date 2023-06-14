@@ -1,6 +1,6 @@
 srcs += files([
     'start_screen.cxx',
-    'menu.cxx',
+    'control_menu.cxx',
     'game.cxx',
     'sample.cxx',
 ])

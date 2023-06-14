@@ -1,12 +1,17 @@
+#include <states/control_menu.hxx>
 #include <states/game.hxx>
 #include <states/id.hxx>
 #include <states/sample.hxx>
 #include <states/start_screen.hxx>
+#include <utils/match.hxx>
 
 #include <SFML/Graphics.hpp>
 
+#include <iostream>
 #include <memory>
+#include <string>
 #include <utility>
+#include <variant>
 
 auto main() -> int
 {
@@ -27,13 +32,26 @@ auto main() -> int
         pong::states::id::START,
         window);
 
+    engine.make_factory_for<pong::states::control_menu>(
+        pong::states::id::CONTROLS,
+        window);
+
     engine.make_factory_for<pong::states::main_game>(
         pong::states::id::GAME,
         window,
         12.5f,
         sf::Color::White);
 
-    auto r = engine.change_state(pong::states::id::START);
+    auto result = engine.change_state(pong::states::id::START);
+
+    std::visit(
+        pong::utils::match {
+            [](const std::monostate&) {},
+            [](const std::string& msg) {
+                std::clog << msg << std::endl;
+                std::exit(1);
+            } },
+        result);
 
     while (window->isOpen()) {
         engine.handle_events();
