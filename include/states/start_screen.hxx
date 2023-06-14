@@ -1,66 +1,60 @@
 #ifndef PONG_STATES_START_SCREEN
-#   define PONG_STATES_START_SCREEN
+#define PONG_STATES_START_SCREEN
 
-#include <crank/crank.hxx>
 #include <SFML/Graphics.hpp>
+
+#include <engine.hxx>
+#include <state_interface.hxx>
 
 #include <memory>
 
-namespace pong::states
-{
+namespace pong::states {
 
-    class start_screen
-        : public crank::states::state_interface
-    {
-    public:
+class start_screen
+    : public crank::states::state_interface {
+public:
+    using font_type = sf::Font;
+    using text_type = sf::Text;
 
-        using font_type = sf::Font;
-        using text_type = sf::Text;
+public:
+    enum class cursor_position : short { PLAY,
+        CONTROLS,
+        QUIT };
 
-    public:
+public:
+    explicit start_screen(
+        std::shared_ptr<sf::RenderWindow> window) noexcept;
 
-        enum class cursor_position 
-            : short 
-        { PLAY, CONTROLS, QUIT };
+    void init(crank::engine& engine) noexcept;
 
-    public:
+    void cleanup() noexcept;
 
-        explicit start_screen(
-            std::shared_ptr<sf::RenderWindow> window
-        ) noexcept;
+    void pause() noexcept;
 
-        void init(crank::engine& engine) noexcept;
+    void resume() noexcept;
 
-        void cleanup() noexcept;
+    void handle_events(crank::engine& eng) noexcept;
 
-        void pause() noexcept;
+    void update(crank::engine& eng) noexcept;
 
-        void resume() noexcept;
+    void render(crank::engine& eng) noexcept;
 
-        void handle_events(crank::engine& eng) noexcept;
+protected:
+    start_screen() = default;
 
-        void update(crank::engine& eng) noexcept;
+    void option_select(crank::engine& eng) noexcept;
 
-        void render(crank::engine& eng) noexcept;
+private:
+    std::shared_ptr<sf::RenderWindow> m_window;
+    cursor_position m_cursor_pos = cursor_position::PLAY;
+    font_type m_font;
+    text_type m_title_text;
+    text_type m_play_text;
+    text_type m_controls_text;
+    text_type m_quit_text;
 
-    protected:
+}; /// class start_screen
 
-        start_screen() = default;
+} /// namespace pong::states
 
-        void option_select(crank::engine& eng) noexcept;
-
-    protected:
-
-        std::shared_ptr<sf::RenderWindow> m_window;
-        cursor_position m_cursor_pos;
-        font_type m_font;
-        text_type m_title_text;
-        text_type m_play_text;
-        text_type m_controls_text;
-        text_type m_quit_text;
-
-    };  /// class start_screen
-
-}  /// namespace pong::states
-
-#endif  /// PONG_STATES_SAMPLE
+#endif /// PONG_STATES_SAMPLE

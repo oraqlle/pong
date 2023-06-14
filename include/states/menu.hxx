@@ -2,41 +2,42 @@
 #define PONG_STATES_MENU_SCREEN
 
 #include <SFML/Graphics.hpp>
-#include <crank/crank.hxx>
+
+#include <engine.hxx>
+#include <state_interface.hxx>
+
 #include <memory>
 
-namespace pong::states
-{
+namespace pong::states {
 
-class menu : public crank::states::state_interface
-{
-  public:
+class menu : public crank::states::state_interface {
+public:
     using font_type = sf::Font;
     using text_type = sf::Text;
 
-  public:
-    explicit menu (std::shared_ptr<sf::RenderWindow> window) noexcept;
+public:
+    explicit menu(std::shared_ptr<sf::RenderWindow> window) noexcept;
 
-    void init (crank::engine &engine) noexcept;
+    void init(crank::engine& engine) noexcept;
 
-    void cleanup () noexcept;
+    void cleanup() noexcept;
 
-    void pause () noexcept;
+    void pause() noexcept;
 
-    void resume () noexcept;
+    void resume() noexcept;
 
-    void handle_events (crank::engine &eng) noexcept;
+    void handle_events(crank::engine& eng) noexcept;
 
-    void update (crank::engine &eng) noexcept;
+    void update(crank::engine& eng) noexcept;
 
-    void render (crank::engine &eng) noexcept;
+    void render(crank::engine& eng) noexcept;
 
-  protected:
-    menu () = default;
+protected:
+    menu() = default;
 
-    void option_select (crank::engine &eng) noexcept;
+    void option_select(crank::engine& eng) noexcept;
 
-  protected:
+private:
     std::shared_ptr<sf::RenderWindow> m_window;
     font_type m_font;
     text_type m_title_text;

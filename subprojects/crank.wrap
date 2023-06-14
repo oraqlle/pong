@@ -1,0 +1,7 @@
+[wrap-git]
+url = https://github.com/oraqlle/crank.git
+revision = 3-state-object-used-after-the-end-of-their-lifetime
+depth = 1
+
+[provides]
+dependency_names = crank
