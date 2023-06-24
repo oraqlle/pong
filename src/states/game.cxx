@@ -154,6 +154,11 @@ main_game::main_game(
 
 void main_game::init([[maybe_unused]] crank::engine& eng) noexcept
 {
+    m_scores = { 0u, 0u };
+    auto [w, h] = static_cast<sf::Vector2f>(m_window->getSize());
+    m_ball.reset_position(w, h);
+    m_left_paddle.reset_paddle();
+    m_right_paddle.reset_paddle();
 }
 
 void main_game::cleanup() noexcept
@@ -184,42 +189,7 @@ void main_game::handle_events([[maybe_unused]] crank::engine& eng) noexcept
         if (event.type == sf::Event::Closed)
             m_window->close();
         else if (event.type == sf::Event::KeyPressed)
-            switch (event.key.code) {
-            case sf::Keyboard::Escape: {
-                auto result = eng.change_state(pong::states::id::START);
-
-                std::visit(
-                    pong::utils::match {
-                        [](const std::monostate&) {},
-                        [](const std::string& msg) {
-                            std::clog << msg << std::endl;
-                        } },
-                    result);
-                break;
-            }
-            case sf::Keyboard::W:
-                if (!m_left_paddle.getGlobalBounds().intersects(m_top_boundary))
-                    m_left_paddle.move_up();
-                break;
-            case sf::Keyboard::S:
-                if (!m_left_paddle.getGlobalBounds().intersects(m_bottom_boundary))
-                    m_left_paddle.move_down();
-                break;
-            case sf::Keyboard::I:
-                if (!m_right_paddle.getGlobalBounds().intersects(m_top_boundary))
-                    m_right_paddle.move_up();
-                break;
-            case sf::Keyboard::K:
-                if (!m_right_paddle.getGlobalBounds().intersects(m_bottom_boundary))
-                    m_right_paddle.move_down();
-                break;
-            case sf::Keyboard::Space:
-                if (!m_running)
-                    start_game();
-                break;
-            default:
-                break;
-            }
+            handle_keycode(eng, event.key.code);
 }
 
 void main_game::update([[maybe_unused]] crank::engine& eng) noexcept
@@ -228,64 +198,64 @@ void main_game::update([[maybe_unused]] crank::engine& eng) noexcept
     m_ball.move();
 
     if (m_ball.getGlobalBounds().intersects(m_top_boundary))
-        m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) + 4);
+        m_ball.direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.direction()) + 4);
     else if (m_ball.getGlobalBounds().intersects(m_bottom_boundary))
-        m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) - 4);
+        m_ball.direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.direction()) - 4);
     else if (m_ball.getGlobalBounds().intersects(m_left_boundary)) {
-        m_ball.get_direction() = direction_type::STOP;
+        m_ball.direction() = direction_type::STOP;
         m_ball.setPosition(w / 2.0f, h / 2.0f);
         m_scores.second += 1u;
         m_running = false;
     } else if (m_ball.getGlobalBounds().intersects(m_right_boundary)) {
-        m_ball.get_direction() = direction_type::STOP;
+        m_ball.direction() = direction_type::STOP;
         m_ball.setPosition(w / 2.0f, h / 2.0f);
         m_scores.first += 1u;
         m_running = false;
     } else if (m_ball.getGlobalBounds().intersects(m_left_paddle.as_bounds())) {
-        if (m_ball.get_direction() == direction_type::LEFT) {
+        if (m_ball.direction() == direction_type::LEFT) {
             auto gen = std::default_random_engine { std::random_device {}() };
             auto rand = std::uniform_int_distribution { 1, 3 };
 
             switch (rand(gen)) {
             case 1:
-                m_ball.get_direction() = direction_type::UPRIGHT;
+                m_ball.direction() = direction_type::UPRIGHT;
                 break;
 
             case 2:
-                m_ball.get_direction() = direction_type::DOWNRIGHT;
+                m_ball.direction() = direction_type::DOWNRIGHT;
                 break;
 
             case 3:
-                m_ball.get_direction() = direction_type::RIGHT;
+                m_ball.direction() = direction_type::RIGHT;
                 break;
 
             default:
                 break;
             }
         } else
-            m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) + 1);
+            m_ball.direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.direction()) + 1);
     } else if (m_ball.getGlobalBounds().intersects(m_right_paddle.as_bounds())) {
-        if (m_ball.get_direction() == direction_type::RIGHT) {
+        if (m_ball.direction() == direction_type::RIGHT) {
             auto gen = std::default_random_engine { std::random_device {}() };
             auto rand = std::uniform_int_distribution { 1, 3 };
 
             switch (rand(gen)) {
             case 1:
-                m_ball.get_direction() = direction_type::UPLEFT;
+                m_ball.direction() = direction_type::UPLEFT;
                 break;
 
             case 2:
-                m_ball.get_direction() = direction_type::DOWNLEFT;
+                m_ball.direction() = direction_type::DOWNLEFT;
                 break;
 
             case 3:
-                m_ball.get_direction() = direction_type::LEFT;
+                m_ball.direction() = direction_type::LEFT;
                 break;
             default:
                 break;
             }
         } else
-            m_ball.get_direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.get_direction()) - 1);
+            m_ball.direction() = static_cast<direction_type>(static_cast<unsigned short>(m_ball.direction()) - 1);
     }
 }
 
@@ -317,8 +287,48 @@ void main_game::start_game() noexcept
     auto eng = std::default_random_engine { std::random_device {}() };
     auto rand = std::uniform_int_distribution { 1, 6 };
     auto dir = rand(eng);
-    m_ball.get_direction() = static_cast<direction_type>(dir);
+    m_ball.direction() = static_cast<direction_type>(dir);
     m_running = true;
+}
+
+void main_game::handle_keycode(crank::engine& eng, const sf::Keyboard::Key& keycode) noexcept
+{
+    switch (keycode) {
+    case sf::Keyboard::Escape: {
+        auto result = eng.push_state(pong::states::id::PAUSED);
+
+        std::visit(
+            pong::utils::match {
+                [](const std::monostate&) {},
+                [](const std::string& msg) {
+                    std::clog << msg << std::endl;
+                } },
+            result);
+        break;
+    }
+    case sf::Keyboard::W:
+        if (!m_left_paddle.getGlobalBounds().intersects(m_top_boundary))
+            m_left_paddle.move_up();
+        break;
+    case sf::Keyboard::S:
+        if (!m_left_paddle.getGlobalBounds().intersects(m_bottom_boundary))
+            m_left_paddle.move_down();
+        break;
+    case sf::Keyboard::I:
+        if (!m_right_paddle.getGlobalBounds().intersects(m_top_boundary))
+            m_right_paddle.move_up();
+        break;
+    case sf::Keyboard::K:
+        if (!m_right_paddle.getGlobalBounds().intersects(m_bottom_boundary))
+            m_right_paddle.move_down();
+        break;
+    case sf::Keyboard::Space:
+        if (!m_running)
+            start_game();
+        break;
+    default:
+        break;
+    }
 }
 
 } /// namespace pong::states

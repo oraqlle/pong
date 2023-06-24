@@ -8,6 +8,7 @@ enum id {
     GAME,
     START,
     CONTROLS,
+    PAUSED,
 };
 
 } /// namespace pong::states

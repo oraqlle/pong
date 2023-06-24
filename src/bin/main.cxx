@@ -1,6 +1,7 @@
 #include <states/control_menu.hxx>
 #include <states/game.hxx>
 #include <states/id.hxx>
+#include <states/pause_menu.hxx>
 #include <states/sample.hxx>
 #include <states/start_screen.hxx>
 #include <utils/match.hxx>
@@ -34,6 +35,10 @@ auto main() -> int
 
     engine.make_factory_for<pong::states::control_menu>(
         pong::states::id::CONTROLS,
+        window);
+
+    engine.make_factory_for<pong::states::pause_menu>(
+        pong::states::id::PAUSED,
         window);
 
     engine.make_factory_for<pong::states::main_game>(

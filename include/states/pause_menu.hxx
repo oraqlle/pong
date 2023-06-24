@@ -1,5 +1,5 @@
-#ifndef PONG_STATES_MENU_SCREEN
-#define PONG_STATES_MENU_SCREEN
+#ifndef PONG_STATES_PAUSE_SCREEN
+#define PONG_STATES_PAUSE_SCREEN
 
 #include <SFML/Graphics.hpp>
 
@@ -10,13 +10,13 @@
 
 namespace pong::states {
 
-class control_menu : public crank::states::state_interface {
+class pause_menu : public crank::states::state_interface {
 public:
     using font_type = sf::Font;
     using text_type = sf::Text;
 
 public:
-    explicit control_menu(std::shared_ptr<sf::RenderWindow> window) noexcept;
+    explicit pause_menu(std::shared_ptr<sf::RenderWindow> window) noexcept;
 
     void init(crank::engine& engine) noexcept;
 
@@ -33,19 +33,17 @@ public:
     void render(crank::engine& eng) noexcept;
 
 protected:
-    control_menu() = default;
+    pause_menu() = default;
 
 private:
     std::shared_ptr<sf::RenderWindow> m_window;
     font_type m_font;
     text_type m_title_text;
-    text_type m_select_text;
-    text_type m_left_player_controls_text;
-    text_type m_right_player_controls_text;
     text_type m_back_text;
+    text_type m_quit_text;
 
-}; /// class control_menu
+}; /// class pause_menu
 
 } // namespace pong::states
 
-#endif /// PONG_MENU_SAMPLE
+#endif /// PONG_PAUSE_SAMPLE

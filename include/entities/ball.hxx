@@ -11,7 +11,7 @@ class ball
     : public sf::CircleShape {
 public:
     // clang-format off
-        enum class direction
+        enum class direction_t
             : unsigned short
         { 
             UPLEFT = 1, UP = 7, UPRIGHT = 2,
@@ -26,7 +26,7 @@ public:
 public:
     ball() noexcept
         : sf::CircleShape()
-        , m_direction { direction::STOP }
+        , m_direction { direction_t::STOP }
     {
     }
 
@@ -36,23 +36,29 @@ public:
         float_type ypos,
         colour_type colour) noexcept
         : sf::CircleShape(radius)
-        , m_direction { direction::STOP }
+        , m_direction { direction_t::STOP }
     {
         setOrigin(radius, radius);
         setPosition(sf::Vector2f(xpos, ypos));
         setFillColor(colour);
     }
 
-    auto get_direction() noexcept
-        -> direction&
+    auto direction() noexcept
+        -> direction_t&
     {
         return m_direction;
     }
 
     auto get_direction() const noexcept
-        -> const direction&
+        -> const direction_t&
     {
         return m_direction;
+    }
+
+    auto reset_position(const float& w, const float& h) noexcept
+        -> void
+    {
+        setPosition(sf::Vector2f(w / 2.0f, h / 2.0f));
     }
 
     auto move() noexcept
@@ -61,41 +67,41 @@ public:
         auto [xpos, ypos] = getPosition();
 
         switch (m_direction) {
-        case direction::UPLEFT:
+        case direction_t::UPLEFT:
             xpos -= m_xspeed;
             ypos -= m_yspeed;
             break;
 
-        case direction::UP:
+        case direction_t::UP:
             ypos -= m_yspeed;
             break;
 
-        case direction::UPRIGHT:
+        case direction_t::UPRIGHT:
             xpos += m_xspeed;
             ypos -= m_yspeed;
             break;
 
-        case direction::LEFT:
+        case direction_t::LEFT:
             xpos -= m_xspeed;
             break;
 
-        case direction::STOP:
+        case direction_t::STOP:
             break;
 
-        case direction::RIGHT:
+        case direction_t::RIGHT:
             xpos += m_xspeed;
             break;
 
-        case direction::DOWNLEFT:
+        case direction_t::DOWNLEFT:
             xpos -= m_xspeed;
             ypos += m_yspeed;
             break;
 
-        case direction::DOWN:
+        case direction_t::DOWN:
             ypos += m_yspeed;
             break;
 
-        case direction::DOWNRIGHT:
+        case direction_t::DOWNRIGHT:
             xpos += m_xspeed;
             ypos += m_yspeed;
             break;
@@ -110,7 +116,7 @@ public:
 private:
     static constexpr float_type m_xspeed = 2.25f;
     static constexpr float_type m_yspeed = 2.125f;
-    direction m_direction;
+    direction_t m_direction;
 
 }; //< class ball
 

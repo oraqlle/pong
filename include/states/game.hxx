@@ -20,7 +20,7 @@ class main_game
 public:
     using ball_type = pong::entities::ball;
     using boundary_type = sf::Rect<float>;
-    using direction_type = pong::entities::ball::direction;
+    using direction_type = pong::entities::ball::direction_t;
     using font_type = sf::Font;
     using paddle_type = pong::entities::paddle;
     using text_type = sf::Text;
@@ -47,6 +47,7 @@ public:
 
 private:
     void start_game() noexcept;
+    void handle_keycode(crank::engine& eng, const sf::Keyboard::Key& keycode) noexcept;
 
 private:
     std::shared_ptr<sf::RenderWindow> m_window;
@@ -57,7 +58,7 @@ private:
     boundary_type m_bottom_boundary;
     boundary_type m_left_boundary;
     boundary_type m_right_boundary;
-    std::pair<unsigned, unsigned> m_scores = std::pair{ 0u, 0u };
+    std::pair<unsigned, unsigned> m_scores = std::pair { 0u, 0u };
     bool m_running = false;
     font_type m_font;
     text_type m_left_score;

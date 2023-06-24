@@ -45,23 +45,41 @@ control_menu::control_menu(std::shared_ptr<sf::RenderWindow> window) noexcept
     m_title_text.setOrigin(title_w / 2.0f, title_h / 2.0f);
     m_title_text.setPosition(w / 2.0f, 0.3f * h);
 
+    m_select_text.setFont(m_font);
+    m_select_text.setString("Select - <Enter>"s);
+    m_select_text.setStyle(text_type::Style::Bold);
+    m_select_text.setCharacterSize(static_cast<unsigned>(0.04f * h));
+    auto main_w = m_select_text.getGlobalBounds().width;
+    auto main_h = m_select_text.getGlobalBounds().height;
+    m_select_text.setOrigin(main_w / 2.0f, main_h / 2.0f);
+    m_select_text.setPosition(w / 2.0f, h / 2.0f);
+
+    m_left_player_controls_text.setFont(m_font);
+    m_left_player_controls_text.setString("Left Player Controls - Up: <W>, Down: <S>"s);
+    m_left_player_controls_text.setStyle(text_type::Style::Bold);
+    m_left_player_controls_text.setCharacterSize(static_cast<unsigned>(0.04f * h));
+    auto left_player_controls_w = m_left_player_controls_text.getGlobalBounds().width;
+    auto left_player_controls_h = m_left_player_controls_text.getGlobalBounds().height;
+    m_left_player_controls_text.setOrigin(left_player_controls_w / 2.0f, left_player_controls_h / 2.0f);
+    m_left_player_controls_text.setPosition(w / 2.0f, h * 0.6f);
+
+    m_right_player_controls_text.setFont(m_font);
+    m_right_player_controls_text.setString("Right Player Controls - Up: <I>, Down: <K>"s);
+    m_right_player_controls_text.setStyle(text_type::Style::Bold);
+    m_right_player_controls_text.setCharacterSize(static_cast<unsigned>(0.04f * h));
+    auto right_player_controls_w = m_right_player_controls_text.getGlobalBounds().width;
+    auto right_player_controls_h = m_right_player_controls_text.getGlobalBounds().height;
+    m_right_player_controls_text.setOrigin(right_player_controls_w / 2.0f, right_player_controls_h / 2.0f);
+    m_right_player_controls_text.setPosition(w / 2.0f, h * 0.7f);
+
     m_back_text.setFont(m_font);
-    m_back_text.setString("Back - <Esc>"s);
+    m_back_text.setString("Back to Main Page - <Esc>"s);
     m_back_text.setStyle(text_type::Style::Bold);
     m_back_text.setCharacterSize(static_cast<unsigned>(0.04f * h));
     auto back_w = m_back_text.getGlobalBounds().width;
     auto back_h = m_back_text.getGlobalBounds().height;
     m_back_text.setOrigin(back_w / 2.0f, back_h / 2.0f);
-    m_back_text.setPosition(w / 2.0f, h / 2.0f);
-
-    m_main_text.setFont(m_font);
-    m_main_text.setString("Text here"s);
-    m_main_text.setStyle(text_type::Style::Bold);
-    m_main_text.setCharacterSize(static_cast<unsigned>(0.04f * h));
-    auto main_w = m_main_text.getGlobalBounds().width;
-    auto main_h = m_main_text.getGlobalBounds().height;
-    m_main_text.setOrigin(main_w / 2.0f, main_h / 2.0f);
-    m_main_text.setPosition(w / 2.0f, h / 2.0f);
+    m_back_text.setPosition(w / 2.0f, h * 0.9f);
 }
 
 void control_menu::init([[maybe_unused]] crank::engine& eng) noexcept
@@ -105,7 +123,9 @@ void control_menu::render([[maybe_unused]] crank::engine& eng) noexcept
 {
     m_window->clear();
     m_window->draw(m_title_text);
-    m_window->draw(m_main_text);
+    m_window->draw(m_select_text);
+    m_window->draw(m_left_player_controls_text);
+    m_window->draw(m_right_player_controls_text);
     m_window->draw(m_back_text);
     m_window->display();
 }
