@@ -1,6 +1,6 @@
 # Pong
 
-Simple Pong game written in C++ using SFML, Crank and built bpt.
+Simple Pong game written in C++ using SFML, Crank and built using Meson. This project is pretty hacky and mostly serves as a project to test the usage of the Crank state framework.
 
 ## Content
 
@@ -19,15 +19,15 @@ Simple Pong game written in C++ using SFML, Crank and built bpt.
 - [bpt](bpt.pizza/docs/latest/index.html)
 
 ```sh
-# Build using `gcc.yaml`
-bpt build -t gcc.yaml -o build
+meson setup targets
+meson compile -C targets
 ```
 
 ## Running
 
 ```sh
 # Launch application
-./build/bin/pong
+./targets/pong
 ```
 
 ## License, Code of Conduct & Contributing
